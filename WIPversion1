@@ -1,0 +1,78 @@
+package karatsuba;
+import java.io.*;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Main {
+
+    private static double kMult(String x, String y)
+    {                                                                       // Probably could get away with using doubles for everything, and no parsing, but for now this works
+        int xLength = x.length();
+        int yLength = y.length();
+
+        if(xLength == 1|| yLength == 1 )
+        {
+            int xValue = Integer.parseInt(x);
+            int yValue = Integer.parseInt(y);
+
+            return xValue*yValue;
+        }
+        else
+        {
+            double xValue = Double.parseDouble(x);
+            double yValue = Double.parseDouble(y);
+
+            int n = Math.max(xLength, yLength);     // largest number size, as that is the biggest value
+            int nOver2 = n/2;
+            double shifter = Math.pow(10, nOver2);      // 10 to the power of something makes it shift placement
+            double shifter2 = Math.pow(10, 2*nOver2);       // This is used so if n is odd or even, it doesn't matter.
+
+            double a = xValue * shifter;            // splitting up the numbers.
+            double b = xValue % shifter;            // mod of the shifter allows for the second half of the numbers
+            double c = yValue * shifter;
+            double d = yValue % shifter;
+            System.out.println(a + " " + b + " " + c + " " + d);        // test to see if the numbers are correctly represented
+
+            String aString = Double.toString(a);        // converting everything back into a string to allow for recursion
+            String bString = Double.toString(b);
+            String cString = Double.toString(c);
+            String dString = Double.toString(d);
+
+            double ac = kMult(aString , cString);
+            double bd = kMult(bString , dString);
+            double ad_plus_bc = kMult(aString+bString, cString+dString) - ac - bd;
+
+            return ac * shifter2 + (ad_plus_bc * shifter2) + bd;        // karatsuba formula
+
+
+        }
+    }
+
+    public static double question(Scanner input) throws InputMismatchException      // I am currently trying to make a loop, so the question of "Please enter your first value"
+    {                                                                               // gets asked again if the value that they enter was not a number (like a string)
+        double value1 = input.nextDouble();
+        return value1;
+    }
+
+    public static void main(String[] args)
+    {
+        Scanner input = new Scanner(System.in);
+        System.out.println("This program multiplies two numbers. \nPlease enter the first value:");
+        {
+            try
+            {
+                questions(input);           //basically same as above, currently just working on the "interface" portion, where it asks for the users input.
+
+                questions(input);           // I have two of these things because I know I need to return two values eventually.
+            }
+            catch (InputMismatchException ex)
+            {
+                System.out.println("Invalid entry. This program only accepts numbers");
+            }
+        }
+                                                // I am using the psudo-code https://pythonandr.com/2015/10/13/karatsuba-multiplication-algorithm-python-code/ as my base for the program
+                                                // if you understand it, and you see what part I have left to do, and you wanted to do it, go ahead. I will work on this again at ~8:00pm Wednesday
+                                                // For now, if you don't feel like coding, just work on the presentation.
+                                                // Thanks - Alson
+    }
+}
