@@ -1,0 +1,68 @@
+/* Authors: Alson Kharel, Anthony Sepulveda, Vincent Nguyen, Antoine Si
+ * CS 3310.01 - Group Project - Karatsuba
+ */
+
+package karatsuba;
+import java.util.Scanner;
+
+public class Main {
+
+    private static long kMult(long x, long y) {                 // Function to multiply the two numbers
+        int xLength = getSize(x);
+        int yLength = getSize(y);
+
+
+        int N = Math.max(xLength, yLength);						// Maximum length of number
+
+        if(x < 1000 || y < 1000)
+            return x*y;                                         // if values are too small, multiply directly
+
+
+        N = (N / 2) + (N % 2);									// Max length divided, rounded up
+
+        long m = (long)Math.pow(10, N);							// Multiplier
+
+        long b = x / m;											// Splitting up the numbers into smaller parts
+        long a = x - (b * m);
+        long d = y / m;
+        long c = y - (d * N);
+
+        long ac = kMult(a, c);									// Compute the sub expressions
+        long bd = kMult(b, d);
+        long ad_plus_bc = kMult(a + b, c + d);
+
+        System.out.println("ac = " + ac + " \nbd = " + bd + " \nad+bc = " + ad_plus_bc);
+        System.out.println("Plugging in the Karatsuba Formula:");
+        System.out.println("(((ad+bc)-ac-bd)*m) + (bd*(10^(2*((N/2)+(N%2)))))");
+        System.out.println("(((" + ad_plus_bc + ") - " + ac + " - " + bd + ") * " + m + ") + (" + bd + " * 10^(2*" + N + " +)))");
+
+        return ac + ((ad_plus_bc - ac - bd) * m) + (bd * (long)(Math.pow(10, 2 * N)));
+
+    }
+
+    public static int getSize(long num) {					// Function to calculate the length of the given number
+        int cntr = 0;
+        while(num != 0) {
+            cntr++;
+            num /=10;
+        }
+        return cntr;
+    }
+
+    public static void main(String[] args)
+    {
+        Scanner input = new Scanner(System.in);
+        System.out.println("This program multiplies two numbers. \nPlease enter two integer values:");
+
+
+        long x = input.nextLong();							// Accept two integers
+        System.out.println("First value entered: " + x);
+        long y = input.nextLong();
+        System.out.println("Second value entered: " + y);
+
+        System.out.println("Now doing: \n\t" + x + " \n   x \n\t" + y + "\n  __________");
+
+        long product = Main.kMult(x, y);					// Call multiply function
+        System.out.println("Product : "+ product);        // Print out the product
+    }
+}
