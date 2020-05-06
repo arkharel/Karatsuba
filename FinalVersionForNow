@@ -1,0 +1,84 @@
+package karatsuba;
+import java.util.Scanner;
+
+public class Main {
+    static int g = 0;                                                                                   // Creating global variables. G is the max length of the two inputted numbers
+    static int i = 0;                                                                                   // i is a counter for each iteration of kMult
+
+    private static double kMult(String x, String y)
+    {
+        int xLength = x.length();                                                                       // Length of X
+        int yLength = y.length();                                                                       // Length of Y
+
+
+        if(xLength == 1|| yLength == 1 )                                                                // Base Case Conditional Check: If single digit number, use standard multiplication
+        {
+            double xValue = Double.parseDouble(x);                                                      // Convert x back into double
+            double yValue = Double.parseDouble(y);                                                      // Convert y back into double
+
+            return xValue*yValue;                                                                       // Multiply x*y
+        }
+        else
+        {
+            int n = Math.max(xLength, yLength);                                                         // largest number size, as that is the biggest value
+            String a = x.substring(0,x.length()/2);                                                     // String for first half of X
+            String b = x.substring((x.length()/2));                                                     // String for second half of X
+            String c = y.substring(0,y.length()/2);                                                     // String for first half of Y
+            String d = y.substring(y.length()/2);                                                       // String for second half of Y
+            int nOver2 = n/2;                                                                           // n/2
+            double shifter1 = Math.pow(10, n);                                                          // 10^n - used to pad 0's
+            double shifter2 = Math.pow(10, nOver2);                                                     // 10^n/2 - used to pad 0's
+
+            double ac = kMult(a , c);                                                                   // Multiply a*c using kMult
+            double bd = kMult(b , d);                                                                   // Multiply b*d using kMult
+            int a_String = Integer.parseInt(a);                                                         // Turn a back into an Integer
+            int b_String = Integer.parseInt(b);                                                         // Turn b back into an Integer
+            int c_String = Integer.parseInt(c);                                                         // Turn c back into an Integer
+            int d_String = Integer.parseInt(d);                                                         // Turn d back into an Integer
+
+            int a_plus_b = a_String+b_String;                                                           // Add A + B
+            int c_plus_d = c_String+d_String;                                                           // Add C + D
+
+            String a_plus_b_string = Integer.toString(a_plus_b);                                        // Convert A+B back into String
+            String c_plus_d_string = Integer.toString(c_plus_d);                                        // Convert C+D back into String
+
+
+            double ad_plus_bc = kMult(a_plus_b_string, c_plus_d_string) - ac - bd;                      // AD+BC Used through kMult formula
+
+            double result = ac * shifter1 + (ad_plus_bc * shifter2) + bd;                               // Store result value
+
+            while(i == g)                                                                               // Print out individual values at the LAST step only
+            {
+                System.out.println("ac = " + ac + " \nbd = " + bd + " \nad+bc = " + ad_plus_bc);        // Formatting
+                System.out.println("\nPlugging in the Karatsuba Formula:");                             // Formatting
+                System.out.println("(10^n)*ac + 10^(n/2)*(ad+bc) + bd\n");                              // Formatting
+                System.out.println("(" + shifter1 + ")*" + ac + " + " +                                 // Formatting
+                        "(" + shifter2 + ")*(" + ad_plus_bc + ") + " + bd);                             // Formatting
+                i++;                                                                                    // Increase counter so loop stops
+            }
+            i++;                                                                                        // Iteration Counter
+            return result;                                                                              // Return results
+
+
+        }
+    }
+
+
+
+    public static void main(String[] args)
+    {
+        Scanner input = new Scanner(System.in);                                                         // Scanner to allow for user input
+        System.out.println("This program multiplies two numbers. \nPlease enter the first value:");     // Prompt
+        String input1 = input.next();                                                                   // User input for x value
+        System.out.println("Please enter the second value:");                                           // Prompt 2
+        String input2 = input.next();                                                                   // User input for y value
+
+        int xLength = input1.length();                                                                  // Check length of x
+        int yLength = input2.length();                                                                  // Check length of y
+        g = Math.max(xLength, yLength);                                                                 // largest number size, as that is the biggest value
+
+        System.out.println("Now doing: \n\t" + input1 + " \n   x \n\t" + input2 + "\n  __________");    // Formatting
+        System.out.println("Product: " + kMult(input1, input2));                                        // Print out Karatsuba Multiplication Product
+
+    }
+}
